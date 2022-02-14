@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SjxLogistics", "SjxLogistics.csproj", "{38E8368A-4FDE-4799-A019-375ABD70101D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sjx-Mvc", "..\Sjx-Mvc\Sjx-Mvc.csproj", "{55C990C8-3A9B-4F1B-BE03-EA18F0AB48F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38E8368A-4FDE-4799-A019-375ABD70101D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38E8368A-4FDE-4799-A019-375ABD70101D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38E8368A-4FDE-4799-A019-375ABD70101D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38E8368A-4FDE-4799-A019-375ABD70101D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C990C8-3A9B-4F1B-BE03-EA18F0AB48F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C990C8-3A9B-4F1B-BE03-EA18F0AB48F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C990C8-3A9B-4F1B-BE03-EA18F0AB48F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C990C8-3A9B-4F1B-BE03-EA18F0AB48F7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C4581B06-1F11-4ECD-B4ED-733811C2B132}
+	EndGlobalSection
+EndGlobal
