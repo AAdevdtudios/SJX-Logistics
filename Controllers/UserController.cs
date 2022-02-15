@@ -106,7 +106,7 @@ namespace SjxLogistics.Controllers
                 var uid = rand.Next(1000, 100000);
                 string deliveryCode = GenerateDeliveryCode(rand.Next(1000, 10000));
                 string orderCode = GetnewId(uid);
-                int price = CalculateCarges(order.Distance);
+                int price = CalculateCharges(order.Distance);
                 var responce = PaymentsMethod(order.PaymentType);
 
                 if (price != 0)
@@ -118,11 +118,11 @@ namespace SjxLogistics.Controllers
                         ReceiversName = order.ReceiversName,
                         Categories = order.Categories,
                         Weight = order.Weight,
-                        CustormerEmail = user.Email,
+                        CustomersEmail = user.Email,
                         OrderCode = orderCode,
                         Status = OrderStatus.Pending,
                         IsExpressDelivery = order.IsExpressDelivery,
-                        RecieverPhone = order.RecieverPhone,
+                        ReceiversPhone = order.ReceiversPhone,
                         Charges = price,
                         DeliveryCode = deliveryCode,
                         PaymentType = responce,
@@ -227,7 +227,7 @@ namespace SjxLogistics.Controllers
             return "UI" + ids;
         }
 
-        static int CalculateCarges(double distance)
+        static int CalculateCharges(double distance)
         {
             int basePrice = 500;//1000
             if (distance == 0)
@@ -250,15 +250,15 @@ namespace SjxLogistics.Controllers
             return value;
         }
 
-        static string PaymentsMethod(string orderReques)
+        static string PaymentsMethod(string orderRequest)
         {
-            orderReques = orderReques.ToLower() switch
+            orderRequest = orderRequest.ToLower() switch
             {
                 "transfer" => "Transfer",
                 "card" => "Card",
                 _ => "Wallet",
             };
-            return orderReques;
+            return orderRequest;
         }
         #endregion
 

@@ -1,9 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "SojCljP27OygE45eqSM3mM6561qCLQQZNQWNKMP67bvFG+n6pAFnSAAlreh9oUfsyrXErUmvXpxXvE27xGp7Jw==",
+  "dgSpecHash": "bcmm9pMN2CMvr6P5L4zNE9C1oBMnyjK58khVbTGAkKala3FnVZ2tnJzR933Q5zU7gFRCQ6NWDwrbonoBOAE4lw==",
   "success": true,
   "projectFilePath": "C:\\Users\\olade\\Source\\Repos\\SJX-Logistics\\SjxLogistics.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.4.0\\amazon.lambda.apigatewayevents.2.4.0.nupkg.sha512",
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.applicationloadbalancerevents\\2.1.0\\amazon.lambda.applicationloadbalancerevents.2.1.0.nupkg.sha512",
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.aspnetcoreserver\\7.0.1\\amazon.lambda.aspnetcoreserver.7.0.1.nupkg.sha512",
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.core\\2.1.0\\amazon.lambda.core.2.1.0.nupkg.sha512",
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.logging.aspnetcore\\3.1.0\\amazon.lambda.logging.aspnetcore.3.1.0.nupkg.sha512",
+    "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.serialization.systemtextjson\\2.2.0\\amazon.lambda.serialization.systemtextjson.2.2.0.nupkg.sha512",
     "C:\\Users\\olade\\.nuget\\packages\\bcrypt.net-next\\4.0.2\\bcrypt.net-next.4.0.2.nupkg.sha512",
     "C:\\Users\\olade\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\olade\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.12\\microsoft.aspnetcore.authentication.jwtbearer.5.0.12.nupkg.sha512",

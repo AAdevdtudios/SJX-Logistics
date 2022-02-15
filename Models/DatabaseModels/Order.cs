@@ -15,7 +15,7 @@ namespace SjxLogistics.Models.DatabaseModels
         public string ReceiversName { get; set; }
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")]
         [Required]
-        public string RecieverPhone { get; set; }
+        public string ReceiversPhone { get; set; }
 
         public string DeliveryCode { get; set; }
 
@@ -28,7 +28,7 @@ namespace SjxLogistics.Models.DatabaseModels
 
         [Required]
         //For References purposes 
-        public string CustormerEmail { get; set; }
+        public string CustomersEmail { get; set; }
 
         [Required]
         //For References purposes 

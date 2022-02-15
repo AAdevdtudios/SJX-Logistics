@@ -20,7 +20,7 @@ namespace SjxLogistics.Models.Request
         public string PaymentType { get; set; }
         [Required]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")]
-        public string RecieverPhone { get; set; }
+        public string ReceiversPhone { get; set; }
 
         public bool IsExpressDelivery { get; set; } = false;
     }

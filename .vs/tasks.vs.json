@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-sjx-web",
+      "appliesTo": "sjx-web/",
+      "type": "launch"
+    }
+  ]
+}
