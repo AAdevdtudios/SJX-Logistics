@@ -143,3 +143,9 @@ C:\Users\olade\Source\Repos\SJX-Logistics\obj\Debug\net5.0\SjxLogistics.dll
 C:\Users\olade\Source\Repos\SJX-Logistics\obj\Debug\net5.0\ref\SjxLogistics.dll
 C:\Users\olade\Source\Repos\SJX-Logistics\obj\Debug\net5.0\SjxLogistics.pdb
 C:\Users\olade\Source\Repos\SJX-Logistics\obj\Debug\net5.0\SjxLogistics.genruntimeconfig.cache
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.APIGatewayEvents.dll
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.ApplicationLoadBalancerEvents.dll
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.AspNetCoreServer.dll
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.Core.dll
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.Logging.AspNetCore.dll
+C:\Users\olade\Source\Repos\SJX-Logistics\bin\Debug\net5.0\Amazon.Lambda.Serialization.SystemTextJson.dll
