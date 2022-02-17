@@ -8,7 +8,7 @@ using System.Linq;
 namespace SjxLogistics.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
