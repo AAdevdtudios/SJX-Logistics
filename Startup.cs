@@ -14,6 +14,7 @@ using SjxLogistics.Components;
 using SjxLogistics.Controllers.AuthenticationComponent;
 using SjxLogistics.Data;
 using SjxLogistics.Models;
+using SjxLogistics.Repository;
 using System;
 using System.Text;
 
@@ -31,6 +32,9 @@ namespace SjxLogistics
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Mail Settings
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, MailServices>();
 
             services.AddControllers();
             AccessConfig authConfig = new ();
@@ -71,6 +75,10 @@ namespace SjxLogistics
             //});
 
             //services.AddScoped<AuditFilterAttribute>();
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
             services.AddSession(options =>
             {
@@ -105,6 +113,7 @@ namespace SjxLogistics
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {

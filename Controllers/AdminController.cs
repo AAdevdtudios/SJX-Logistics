@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SjxLogistics.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin,Admin,Front-Desk")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -79,7 +79,7 @@ namespace SjxLogistics.Controllers
                 response.StatusCode = 200;
                 response.Success = true;
                 response.Data = requestUser;
-                response.Tokken = token;
+                response.Token = token;
 
                 return Ok(response);
             }
@@ -135,7 +135,7 @@ namespace SjxLogistics.Controllers
                 response.StatusCode = 200;
                 response.Success = true;
                 response.Data = requestUser;
-                response.Tokken = token;
+                response.Token = token;
 
                 return Ok(response);
             }
@@ -148,7 +148,6 @@ namespace SjxLogistics.Controllers
                 return BadRequest(response);
             }
         }
-        [Authorize(Roles = "Admin,Front-Desk")]
         [HttpPost("rider/create")]
         public async Task<IActionResult> CreateRider([FromBody] RoleRegisterRequest request)
         {
@@ -193,7 +192,7 @@ namespace SjxLogistics.Controllers
                 response.StatusCode = 200;
                 response.Success = true;
                 response.Data = requestUser;
-                response.Tokken = token;
+                response.Token = token;
 
                 return Ok(response);
             }

@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GeoCoordinatePortable;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SjxLogistics.Components;
+using SjxLogistics.Controllers.AuthenticationComponent;
+using SjxLogistics.Controllers.CodeGen;
 using SjxLogistics.Data;
 using SjxLogistics.Models.DatabaseModels;
 using SjxLogistics.Models.Request;
@@ -21,9 +25,13 @@ namespace SjxLogistics.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataBaseContext _context;
-        public UserController(DataBaseContext context)
+        private readonly IpasswordHasher _ipasswordHasher;
+        private readonly AccessToken _accessTokkenGenerator;
+        public UserController(DataBaseContext context, IpasswordHasher ipasswordHasher, AccessToken accessToken)
         {
             _context = context;
+            _ipasswordHasher = ipasswordHasher;
+            _accessTokkenGenerator = accessToken;
         }
 
         // Get user profile
@@ -39,10 +47,12 @@ namespace SjxLogistics.Controllers
                 if (!int.TryParse(rawUser, out int userId))
                     return Unauthorized();
                 var user = await _context.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                string token = _accessTokkenGenerator.GeneratePaymentToken();
                 response.Messages = "Successful";
                 response.StatusCode = 200;
                 response.Data = user;
                 response.Success = true;
+                response.Token = token;
                 return Ok(response);
             }
             catch (Exception e)
@@ -93,6 +103,7 @@ namespace SjxLogistics.Controllers
         public async Task<ActionResult> PlaceOrder([FromBody] OrderRequest order)
         {
             //
+            CalculateCharges calculateCharges = new CalculateCharges();
             var response = new ServiceResponses<Order>();
             try
             {
@@ -106,8 +117,14 @@ namespace SjxLogistics.Controllers
                 var uid = rand.Next(1000, 100000);
                 string deliveryCode = GenerateDeliveryCode(rand.Next(1000, 10000));
                 string orderCode = GetnewId(uid);
-                int price = CalculateCharges(order.Distance);
-                var responce = PaymentsMethod(order.PaymentType);
+
+                //Distance
+                var sPodition = new GeoCoordinate(order.sLat, order.sLag);
+                var ePodition = new GeoCoordinate(order.eLat, order.eLag);
+                double distance = sPodition.GetDistanceTo(ePodition) * 0.001;
+
+                int price = calculateCharges.CalculateCharge(distance);
+                //var responce = PaymentsMethod(order.PaymentType);
 
                 if (price != 0)
                 {
@@ -125,22 +142,14 @@ namespace SjxLogistics.Controllers
                         ReceiversPhone = order.ReceiversPhone,
                         Charges = price,
                         DeliveryCode = deliveryCode,
-                        PaymentType = responce,
+                        PaymentType = "Paystack",
                         CreatedAt = DateTime.Now.Date,
+                        PaymentStatus= "Not-paid"
                     };
-                    Notifications notifications = new ()
-                    {
-                        From = "SJX Logistics",
-                        Message = "Your order code is "+orderCode + " please provide this to the rider",
-                        MessageType = "Order Placed",
-                        CreatedAt = DateTime.Now,
-                        Status = NotificationStatus.UnRead
-                    };
-                    user.Notifications.Add(notifications);
                     _context.Order.Add(orders);
                     orders.Users = user;
                     await _context.SaveChangesAsync();
-                    response.Messages = "Successful";
+                    response.Messages = "Order is pending";
                     response.StatusCode = 200;
                     response.Data = orders;
                     response.Success = true;
@@ -166,6 +175,100 @@ namespace SjxLogistics.Controllers
             }
         }
         #endregion
+
+        //Create Notification
+        #region Create Notification for user
+        [HttpPost("newNotification")]
+        public async Task<ActionResult> SendNotification([FromBody] NotificationRequests notificationRequest)
+        {
+            var response = new ServiceResponses<Notifications>();
+            try
+            {
+                string rawUser = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                if (!int.TryParse(rawUser, out int userId))
+                    return Unauthorized();
+                var user = await _context.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                var order = await _context.Order.FirstOrDefaultAsync(i => i.OrderCode == notificationRequest.OrderCode);
+                Notifications notifications = new()
+                {
+                    From = "SJX Logistics",
+                    Message = "Your pick up code is " + notificationRequest.OrderCode + " please provide this to the rider on pick up",
+                    MessageType = "Order Placed",
+                    CreatedAt = DateTime.Now,
+                    Status = NotificationStatus.UnRead
+                };
+                order.PaymentStatus = "Paid";
+                order.Refno = notificationRequest.RefNo;
+                user.Notifications.Add(notifications);
+                _context.Notifications.Add(notifications);
+                await _context.SaveChangesAsync();
+                response.Messages = notifications.Message;
+                response.StatusCode = 200;
+                response.Data = notifications;
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                response.StatusCode = 400;
+                response.Messages = "Bad request";
+                response.Success = true;
+                return BadRequest(response);
+            }
+        }
+        #endregion
+
+        //Change Password 
+        [HttpPost("changePassword")]
+        public async Task<ActionResult> ChangePassword([FromBody] PasswordRequest passwordRequest)
+        {
+            var responce = new ServiceResponses<PasswordRequest>();
+            try
+            {
+                string rawUser = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                if (!int.TryParse(rawUser, out int userId))
+                    return Unauthorized();
+
+                var user = await _context.Users.FindAsync(userId);
+                bool isCorrect = _ipasswordHasher.VerifyPassword(passwordRequest.OldPassword, user.Password);
+                if (isCorrect)
+                {
+                    string passwordHash = _ipasswordHasher.HashPassword(passwordRequest.NewPassword);
+                    user.Password = passwordHash;
+
+                    Notifications notifications = new()
+                    {
+                        From = "SJX Logistics",
+                        Message = "Password changed Successfully",
+                        MessageType = "Password Changed",
+                        CreatedAt = DateTime.Now,
+                        Status = NotificationStatus.UnRead
+                    };
+                    user.Notifications.Add(notifications);
+                    _context.Notifications.Add(notifications);
+
+                    await _context.SaveChangesAsync();
+                    responce.StatusCode = 200;
+                    responce.Success = true;
+                    responce.Messages = "Successfully changed password";
+
+
+                    return Ok(responce);
+                }
+                else
+                {
+                    responce.StatusCode = 400;
+                    responce.Success = true;
+                    responce.Messages = "Old password is incorrect, Please check password and try again";
+
+                    return BadRequest(responce);
+                }
+
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
         //Cancel Order
         #region Cancel an Order
@@ -217,7 +320,7 @@ namespace SjxLogistics.Controllers
             {
                 ids = +1;
             }
-            return "#" + ids;
+            return "CD" + ids;
         }
         string GenerateDeliveryCode(int ids)
         {
@@ -227,7 +330,7 @@ namespace SjxLogistics.Controllers
             return "UI" + ids;
         }
 
-        static int CalculateCharges(double distance)
+        /*static int CalculateCharges(double distance)
         {
             int basePrice = 500;//1000
             if (distance == 0)
@@ -248,7 +351,7 @@ namespace SjxLogistics.Controllers
                 value = (int)(basePrice + 0.5 * basePrice);
 
             return value;
-        }
+        }*/
 
         static string PaymentsMethod(string orderRequest)
         {
@@ -311,6 +414,7 @@ namespace SjxLogistics.Controllers
             }
         }
         #endregion
+
         //User Notification
         #region Read All Notifications
         [HttpGet("notifications")]
@@ -328,6 +432,40 @@ namespace SjxLogistics.Controllers
                 response.StatusCode = 200;
                 response.Success = true;
                 response.Data = user.Notifications.OrderBy(i=> i.CreatedAt);
+
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Messages = e.Message;
+                response.StatusCode = 400;
+                response.Success = false;
+                response.Data = null;
+
+                return BadRequest(response);
+            }
+
+        }
+        #endregion
+
+        //Get drafts 
+        #region Get Draft request
+        [HttpGet("draft")]
+        public async Task<IActionResult> AllDrafts()
+        {
+            var response = new ServiceResponses<IEnumerable<Drafts>>();
+            try
+            {
+                string rawUser = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                if (!int.TryParse(rawUser, out int userId))
+                    return Unauthorized();
+                var user = await _context.Users.Include(i=> i.Drafts).FirstOrDefaultAsync(i => i.Id == userId);
+
+                response.Messages = "Notification Retrieved for user";
+                response.StatusCode = 200;
+                response.Success = true;
+                response.Data = user.Drafts;
 
 
                 return Ok(response);

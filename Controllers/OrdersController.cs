@@ -61,8 +61,8 @@ namespace SjxLogistics.Controllers
             var uid = rand.Next(10000, 100000);
             string deliveryCode = GenerateDeliveryCode(rand.Next(100, 1000));
             string orderCode = GetnewId(uid);
-            int price = CalculateCharges(order.Distance);
-            var responce = PaymentsMethod(order.PaymentType);
+            int price = CalculateCharges(12);
+            /*var responce = PaymentsMethod(order.PaymentType);*/
             try
             {
                 if (price != 0)
@@ -79,9 +79,9 @@ namespace SjxLogistics.Controllers
                         Status = OrderStatus.Pending,
                         //Express = order.IsExpressDelivery,
                         ReceiversPhone = order.ReceiversPhone,
-                        Charges = price,
+                        Charges = 100,
                         DeliveryCode = deliveryCode,
-                        PaymentType = responce,
+                        PaymentType = "Card",
                         CreatedAt = DateTime.Now.Date,
                     };
                     _context.Order.Add(orders);

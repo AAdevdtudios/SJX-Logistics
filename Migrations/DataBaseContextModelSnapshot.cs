@@ -94,6 +94,38 @@ namespace SjxLogistics.Migrations
                     b.ToTable("Bikes");
                 });
 
+            modelBuilder.Entity("SjxLogistics.Models.DatabaseModels.Drafts", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Categories")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EndAddress")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartAddress")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("UsersId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("price")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("weight")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("Drafts");
+                });
+
             modelBuilder.Entity("SjxLogistics.Models.DatabaseModels.Notifications", b =>
                 {
                     b.Property<int>("Id")
@@ -167,6 +199,9 @@ namespace SjxLogistics.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("text");
+
                     b.Property<string>("PaymentType")
                         .HasColumnType("text");
 
@@ -186,6 +221,9 @@ namespace SjxLogistics.Migrations
 
                     b.Property<string>("ReceiversPhone")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Refno")
                         .HasColumnType("text");
 
                     b.Property<int?>("RidersId")
@@ -266,6 +304,13 @@ namespace SjxLogistics.Migrations
                     b.HasDiscriminator().HasValue("Riders");
                 });
 
+            modelBuilder.Entity("SjxLogistics.Models.DatabaseModels.Drafts", b =>
+                {
+                    b.HasOne("SjxLogistics.Models.DatabaseModels.Users", null)
+                        .WithMany("Drafts")
+                        .HasForeignKey("UsersId");
+                });
+
             modelBuilder.Entity("SjxLogistics.Models.DatabaseModels.Notifications", b =>
                 {
                     b.HasOne("SjxLogistics.Models.DatabaseModels.Users", null)
@@ -297,6 +342,8 @@ namespace SjxLogistics.Migrations
 
             modelBuilder.Entity("SjxLogistics.Models.DatabaseModels.Users", b =>
                 {
+                    b.Navigation("Drafts");
+
                     b.Navigation("Notifications");
 
                     b.Navigation("Orders");

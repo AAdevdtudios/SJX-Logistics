@@ -18,6 +18,7 @@ namespace SjxLogistics.Models.DatabaseModels
         public string ReceiversPhone { get; set; }
 
         public string DeliveryCode { get; set; }
+        public string PaymentStatus { get; set; }
 
         [Required]
         public string Categories { get; set; }
@@ -50,6 +51,8 @@ namespace SjxLogistics.Models.DatabaseModels
         public float Charges { get; set; }
         public bool IsExpressDelivery { get; set; } = false;
         public string PaymentType { get; set; }
+        public string Refno { get; set; }
+
         public int UserId { get; set; }
         [JsonIgnore]
         public virtual Users Users { get; set; }

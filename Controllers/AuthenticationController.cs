@@ -7,6 +7,7 @@ using SjxLogistics.Models.DatabaseModels;
 using SjxLogistics.Models.Request;
 using SjxLogistics.Models.Responses;
 using SjxLogistics.Models.StaticClasses;
+using SjxLogistics.Repository;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,15 +20,17 @@ namespace SjxLogistics.Controllers
     {
         private readonly IpasswordHasher _ipasswordHasher;
         private readonly DataBaseContext _context;
+        private readonly IMailService _mailService;
         private readonly AccessToken _accessTokkenGenerator;
-        public AuthenticationController(IpasswordHasher ipasswordHasher, DataBaseContext context, AccessToken accessToken)
+        public AuthenticationController(IpasswordHasher ipasswordHasher, DataBaseContext context, AccessToken accessToken, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
             _ipasswordHasher = ipasswordHasher;
             _accessTokkenGenerator = accessToken;
         }
 
-       
+
         [HttpPost("register")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterRequest request)
         {
@@ -41,7 +44,7 @@ namespace SjxLogistics.Controllers
                 return BadRequest(response);
             }
 
-            Users usersEmail = _context.Users.FirstOrDefault(i => i.Email == request.Email|| i.PhoneNumber == request.PhoneNumber);
+            Users usersEmail = _context.Users.FirstOrDefault(i => i.Email == request.Email || i.PhoneNumber == request.PhoneNumber);
             if (usersEmail != null)
             {
                 response.Messages = "This user already exist";
@@ -54,7 +57,7 @@ namespace SjxLogistics.Controllers
             try
             {
                 string passwordHash = _ipasswordHasher.HashPassword(request.Password);
-                Users requestUser = new ()
+                Users requestUser = new()
                 {
                     Email = request.Email,
                     Password = passwordHash,
@@ -64,14 +67,14 @@ namespace SjxLogistics.Controllers
                     Role = Roles.User,
                     Address = request.Address
                 };
+                string token = _accessTokkenGenerator.GenerateToken(requestUser);
                 await _context.Users.AddAsync(requestUser);
                 await _context.SaveChangesAsync();
-                string token = _accessTokkenGenerator.GenerateToken(requestUser);
                 response.Messages = "Successful";
                 response.StatusCode = 200;
                 response.Success = true;
                 response.Data = requestUser;
-                response.Tokken = token;
+                response.Token = token;
 
                 return Ok(response);
             }
@@ -128,13 +131,13 @@ namespace SjxLogistics.Controllers
             response.StatusCode = 200;
             response.Success = true;
             response.Data = userInfo;
-            response.Tokken = token;
+            response.Token = token;
 
             return Ok(response);
         }
 
-        [HttpGet("getUserByEmail")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        [HttpGet("forgotPassword")]
+        public async Task<IActionResult> GetUserByEmail([FromBody] EmailRequest request)
         {
             var response = new ServiceResponses<Users>();
             if (!ModelState.IsValid)
@@ -145,23 +148,34 @@ namespace SjxLogistics.Controllers
                 response.Data = null;
                 return BadRequest(response);
             };
-            var user = await _context.Users.SingleOrDefaultAsync(u=> u.Email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.ToEmail);
             if (user == null)
             {
                 response.Data = null;
                 response.Success = false;
                 response.Messages = "User does not exist";
-               return BadRequest(response);
+                return BadRequest(response);
             }
             else
             {
-                response.Success = true;
-                response.Messages = "Data fetched Successfully";
-                response.Data = user;
-                return Ok(response);
+                var tokken = _accessTokkenGenerator.GenerateResetPasswordToken(user);
+                try
+                {
+                    request.Body = "";
+                    await _mailService.SendEmailAsync(request);
+                    response.Success = true;
+                    response.Messages = "Data fetched Successfully";
+                    response.Data = user;
+                    response.Token = tokken;
+                    return Ok(response);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest();
+                }
             };
 
-            }
+        }
 
 
 
@@ -182,14 +196,14 @@ namespace SjxLogistics.Controllers
             {
                 response.Data = null;
                 response.Success = false;
-                response.Messages = "Unauthorize user";
+                response.Messages = "Un-authorize user";
                 return Unauthorized(response);
             }
             else
             {
-                var users = await _context.Users.Include(u=> u.Orders).Include(u=>u.Notifications).ToListAsync(); 
+                var users = await _context.Users.Include(u => u.Orders).Include(u => u.Notifications).ToListAsync();
 
-                if(users.Count > 0)
+                if (users.Count > 0)
                 {
                     response.Success = true;
                     response.Messages = "Data fetched Successfully";
@@ -200,7 +214,7 @@ namespace SjxLogistics.Controllers
                 {
                     response.Success = false;
                     response.Messages = "No record found";
-                    response.Data =null;
+                    response.Data = null;
                     return NotFound(response);
                 }
 
@@ -213,27 +227,27 @@ namespace SjxLogistics.Controllers
 
 
         [HttpPost("updateUser")]
-    public async Task<IActionResult> UpdateUser([FromBody] Users model)
-    {
-        var response = new ServiceResponses<Users>();
-        if (!ModelState.IsValid)
+        public async Task<IActionResult> UpdateUser([FromBody] Users model)
         {
-            response.Messages = "One or more field is empty";
-            response.StatusCode = 400;
-            response.Success = false;
-            response.Data = null;
-            return BadRequest(response);
-        };
-       var user = await _context.Users.FirstOrDefaultAsync(i => i.Email == model.Email);
+            var response = new ServiceResponses<Users>();
+            if (!ModelState.IsValid)
+            {
+                response.Messages = "One or more field is empty";
+                response.StatusCode = 400;
+                response.Success = false;
+                response.Data = null;
+                return BadRequest(response);
+            };
+            var user = await _context.Users.FirstOrDefaultAsync(i => i.Email == model.Email);
 
-          if (user == null)
-          {
-            response.Success = false;
-            response.Messages = "User does not exist";
-            return BadRequest(response);
+            if (user == null)
+            {
+                response.Success = false;
+                response.Messages = "User does not exist";
+                return BadRequest(response);
 
-           }
-           user.FirstName = model.FirstName;
+            }
+            user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.PhoneNumber = model.PhoneNumber;
             user.Address = model.Address;
@@ -245,48 +259,5 @@ namespace SjxLogistics.Controllers
             return Ok(response);
         }
     }
-
-
-
-            
-         
-
-        
-
-        //public async Task<IActionResult> ResetPassword(ForgotPassword model)
-        //{
-
-        //    var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == model.Email);
-
-
-        //    if (user == null)
-        //    {
-        //        return BadRequest(new Response()
-        //        {
-        //            Success = false,
-        //            Message = "User could not be found",
-        //        });
-
-        //    }
-        //    string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
-
-        //    Users userDetail = new Users();
-        //    {
-        //        user.Password = passwordHash;
-        //        user.LastEditDate = model.LastEditDate = DateTime.UtcNow;
-        //        _context.Update(userDetail);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    return Ok(new Response()
-        //    {
-        //        Success = true,
-        //        Message = "Password successfully updated",
-        //        user = user
-        //    });
-
-
-        //}
-
     }
 

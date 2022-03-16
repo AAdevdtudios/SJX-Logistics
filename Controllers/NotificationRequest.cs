@@ -3,5 +3,6 @@
     public class NotificationRequest
     {
         public int Id { get; set; }
+
     }
 }

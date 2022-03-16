@@ -16,7 +16,6 @@ namespace SjxLogistics.Models.Request
         [MinLength(5, ErrorMessage = "Password too short")]
         public string Password { get; set; }
         [Required]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")]
         public string PhoneNumber { get; set; }
 
         public string Address { get; set; }

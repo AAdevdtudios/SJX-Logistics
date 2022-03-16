@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SjxLogistics.Data;
+using SjxLogistics.Models.DatabaseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +14,17 @@ namespace SjxLogistics.Controllers
     [ApiController]
     public class WelcomeController : ControllerBase
     {
+        private readonly DataBaseContext _context;
+        public WelcomeController(DataBaseContext context)
+        {
+            _context = context;
+        }
         // GET: api/<WelcomeController>
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok("Our service helps to assist business in fulfilling orders <br /> within our global region and helps expand your business < br /> with express delivery");
+
+            return Ok(_context.Riders.ToList());
         }
 
         // GET api/<WelcomeController>/5

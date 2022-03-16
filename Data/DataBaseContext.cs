@@ -15,5 +15,6 @@ namespace SjxLogistics.Data
         public DbSet<SjxLogistics.Models.DatabaseModels.Order> Order { get; set; }
         public DbSet<SjxLogistics.Models.DatabaseModels.Notifications> Notifications { get; set; }
         public DbSet<SjxLogistics.Models.DatabaseModels.Audit> Audit { get; set; }
+        public DbSet<SjxLogistics.Models.DatabaseModels.Drafts> Drafts { get; set; }
     }
 }

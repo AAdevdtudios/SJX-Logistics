@@ -7,6 +7,8 @@
         public string Issuer { get; set; }
         public string Audiance { get; set; }
         public double RefreshExpiration { get; set; }
+        public int RestPassword { get; set; }
+        public int PaymentExpiration { get; set; }
         public string RefreshAccessKey { get; set; }
     }
 }

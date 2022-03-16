@@ -8,6 +8,7 @@ namespace SjxLogistics.Models.DatabaseModels
         public Users()
         {
             Orders = new HashSet<Order>();
+            Drafts = new HashSet<Drafts>();
             Notifications = new HashSet<Notifications>();
         }
         public int Id { get; set; }
@@ -20,7 +21,6 @@ namespace SjxLogistics.Models.DatabaseModels
         public string Email { get; set; }
         [MinLength(5, ErrorMessage = "Password too short")]
         public string Password { get; set; }
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")]
         public string PhoneNumber { get; set; }
 
         public string Address { get; set; }
@@ -28,6 +28,7 @@ namespace SjxLogistics.Models.DatabaseModels
         public string Role { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Drafts> Drafts { get; set; }
         public virtual ICollection<Notifications> Notifications { get; set; }
     }
 }
