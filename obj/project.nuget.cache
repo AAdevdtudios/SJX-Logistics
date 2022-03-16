@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QtpNXe7F7IkN7lJMIhZ+GcH5yMmtl1Mg+HREf0PwjYVKeZUPudQUCSNQTbIeLQYRi9FpI1b1Om3tR3axi8Wbiw==",
+  "dgSpecHash": "E4vn3ynk5Gq+J9XxAwoU10RJePGWRbidywkkYm3IyxoedN6Jt/ylqDVQEs4zH6sNT4WvMQWjWGRiek1OQ2h4Tg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\olade\\Source\\Repos\\SJX-Logistics\\SjxLogistics.csproj",
+  "projectFilePath": "C:\\Users\\olade\\source\\repos\\SJX-Logistics\\SjxLogistics.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.4.0\\amazon.lambda.apigatewayevents.2.4.0.nupkg.sha512",
     "C:\\Users\\olade\\.nuget\\packages\\amazon.lambda.applicationloadbalancerevents\\2.1.0\\amazon.lambda.applicationloadbalancerevents.2.1.0.nupkg.sha512",
