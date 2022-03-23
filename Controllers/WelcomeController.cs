@@ -24,7 +24,7 @@ namespace SjxLogistics.Controllers
         public IActionResult Get()
         {
 
-            return Ok(_context.Riders.ToList());
+            return Ok(_context.NewInfo.ToList());
         }
 
         // GET api/<WelcomeController>/5

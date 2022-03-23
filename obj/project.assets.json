@@ -9688,11 +9688,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\olade\\Source\\Repos\\SJX-Logistics\\SjxLogistics.csproj",
+      "projectUniqueName": "C:\\Users\\olade\\source\\Just ner\\SjxLogistics.csproj",
       "projectName": "SjxLogistics",
-      "projectPath": "C:\\Users\\olade\\Source\\Repos\\SJX-Logistics\\SjxLogistics.csproj",
+      "projectPath": "C:\\Users\\olade\\source\\Just ner\\SjxLogistics.csproj",
       "packagesPath": "C:\\Users\\olade\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\olade\\Source\\Repos\\SJX-Logistics\\obj\\",
+      "outputPath": "C:\\Users\\olade\\source\\Just ner\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\olade\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -9806,7 +9806,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.405\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.406\\RuntimeIdentifierGraph.json"
       }
     }
   }
