@@ -22,6 +22,7 @@ namespace SjxLogistics.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+
     public class UserController : ControllerBase
     {
         private readonly DataBaseContext _context;
